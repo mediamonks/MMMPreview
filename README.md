@@ -26,6 +26,12 @@ source 'https://github.com/CocoaPods/Specs.git'
 pod 'MMMPreview'
 ```
 
+## Preview
+
+This is a regular old `UIViewController` being previewed using `MMMPreview`:
+
+![Xcode Preview](https://raw.githubusercontent.com/mediamonks/MMMPreview/main/Example.png)
+
 ## Usage
 
 The library itself has a minimum deployment target of iOS 11 to be compatible with the majority of projects,
