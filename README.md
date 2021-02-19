@@ -13,7 +13,7 @@ when strictly using programmatic UI (like all the cool kids do).
 
 SPM:
 
-```
+```swift
 .package(url: "https://github.com/mediamonks/MMMPreview", .upToNextMajor(from: "0.1.0"))
 ```
 
@@ -38,7 +38,7 @@ The easiest setup would be to just add the preview provider struct at the bottom
 file.
 
 **UIViewController**
-```
+```swift
 #if canImport(MMMPreview)
 
 import MMMPreview
@@ -60,7 +60,7 @@ internal struct MyViewController_Previews: MMMControllerPreview, PreviewProvider
 ```
 
 **UIView**
-```
+```swift
 #if canImport(MMMPreview)
 
 import MMMPreview
@@ -89,7 +89,7 @@ for multiple screen sizes. You can provide the `MMMControllerPreview` / `MMMView
 
 **Project**
 
-```
+```swift
 #if canImport(MMMPreview)
 
 import MMMPreview
@@ -135,7 +135,7 @@ extension MMMViewPreview {
 
 **Preview**
 
-```
+```swift
 #if canImport(MMMPreview)
 
 import MMMPreview
