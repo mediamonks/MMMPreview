@@ -5,7 +5,16 @@
 
 import SwiftUI
 
-public struct MMMPreviewContext: Identifiable {
+public protocol MMMPreviewContextParsable {
+	func asContexts() -> [MMMPreviewContext]
+}
+
+extension Array: MMMPreviewContextParsable where Element == MMMPreviewContext {
+	
+	public func asContexts() -> [MMMPreviewContext] { self }
+}
+
+public struct MMMPreviewContext: Identifiable, MMMPreviewContextParsable {
 	
 	public enum Layout {
 		case `default`
@@ -20,6 +29,7 @@ public struct MMMPreviewContext: Identifiable {
 	}
 	
 	public static let `default` = MMMPreviewContext(layout: .default)
+	public static let sizeThatFits = MMMPreviewContext(layout: .sizeThatFits)
 	
 	public let id: String
 	
@@ -39,6 +49,8 @@ public struct MMMPreviewContext: Identifiable {
 		self.layout = layout
 		self.scheme = scheme
 	}
+	
+	public func asContexts() -> [MMMPreviewContext] { [self] }
 }
 
 @available(iOS 13, *)

@@ -1,9 +1,9 @@
 # MMMPreview
 
 UIKit previews in your Xcode canvas. Leverages the SwiftUI preview window, but
-displaying your UIViews / UIViewControllers.
+displaying your `UIView`s / `UIViewController`s.
 
-Having a preview of your UIView while developing is a real time saver, especially
+Having a preview of your `UIView` while developing is a real time saver, especially
 when strictly using programmatic UI (like all the cool kids do).
 
 (This is a part of `MMMTemple` suite of iOS libraries we use at
@@ -52,12 +52,14 @@ import MMMPreview
 @available(iOS 13, *) // Tag if your project is < iOS 13.
 internal struct MyViewController_Previews: MMMControllerPreview, PreviewProvider {
 	
-	public static func makeViewController() -> UIViewController {
+	public static func makeViewControllers() -> MMMControllerPreviewParsable {
 		
 		// Setup your ViewController instance, e.g. with a ViewModel.
 		let model = MyMockViewModel()
 		let controller = MyViewController(viewModel: model)
 		
+		// We can either return a single UIViewController instance or an array of 
+		// controllers.
 		return controller
 	}
 }
@@ -74,12 +76,13 @@ import MMMPreview
 @available(iOS 13, *) // Tag if your project is < iOS 13.
 internal struct MyView_Previews: MMMViewPreview, PreviewProvider {
 
-	public static func makeView() -> UIView {
+	public static func makeViews() -> MMMViewPreviewParsable {
 
 		// Setup your View instance, e.g. with a ViewModel.
 		let model = MyMockViewModel()
 		let view = MyView(viewModel: model)
 		
+		// We can return either a single UIView instance, or an array of UIViews.
 		return view
 	}
 }
@@ -103,7 +106,8 @@ import MMMPreview
 @available(iOS 13, *)
 extension MMMControllerPreview {
 	
-	public static var contexts: [MMMPreviewContext] {
+	public static var context: MMMPreviewContextParsable {
+		// We can either return an array of or a single MMMPreviewContext instance.
 		[
 			MMMPreviewContext(
 				displayName: "iPhone SE", // Will be shown as preview title, not necesary.
@@ -122,17 +126,11 @@ extension MMMControllerPreview {
 @available(iOS 13, *)
 extension MMMViewPreview {
 	
-	public static var contexts: [MMMPreviewContext] {
-		[
-			MMMPreviewContext(
-				// A custom width / height for your preview.
-				layout: .custom(width: 320, height: 300)
-			),
-			MMMPreviewContext(
-				layout: .custom(width: 320, height: 300),
-				scheme: .dark
-			)
-		]
+	public static var context: MMMPreviewContextParsable {
+		MMMPreviewContext(
+			// A custom width / height for your preview.
+			layout: .custom(width: 320, height: 300)
+		)
 	}
 }
 
@@ -149,13 +147,14 @@ import MMMPreview
 @available(iOS 13, *) // Tag if your project is < iOS 13.
 internal struct MyView_Previews: MMMViewPreview, PreviewProvider {
 
-	public static func makeView() -> UIView {
-
-		// Setup your View instance, e.g. with a ViewModel.
-		let model = MyMockViewModel()
-		let view = MyView(viewModel: model)
+	public static func makeViews() -> MMMViewPreviewParsable {
 		
-		return view
+		// We can also return multiple views, e.g. for when testing multiple states at once.
+		return [
+			MyView(viewModel: MyMockViewModel(state: .one)),
+			MyView(viewModel: MyMockViewModel(state: .two)),
+			MyView(viewModel: MyMockViewModel(state: .three))
+		]
 	}
 	
 	// This overrides the project-wide contexts.

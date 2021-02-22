@@ -6,14 +6,20 @@
 import SwiftUI
 
 @available(iOS 13, *)
-internal struct ControllerRepresentable<Preview: MMMControllerPreview>: UIViewControllerRepresentable {
+internal struct ControllerRepresentable: UIViewControllerRepresentable {
 	
-	public func makeUIViewController(context: Context) -> Preview.Controller {
-		return Preview.makeViewController()
+	private let controller: UIViewController
+	
+	public init(controller: UIViewController) {
+		self.controller = controller
+	}
+	
+	public func makeUIViewController(context: Context) -> UIViewController {
+		return controller
 	}
 
 	public func updateUIViewController(
-		_ uiViewController: Preview.Controller,
+		_ uiViewController: UIViewController,
 		context: Context
 	) {
 		// Nothing for now.

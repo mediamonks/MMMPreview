@@ -8,19 +8,23 @@ import SwiftUI
 @available(iOS 13, *)
 public protocol MMMViewPreview: MMMControllerPreview {
 	
-	static func makeView() -> UIView
+	static func makeViews() -> MMMViewPreviewParsable
 }
 
 @available(iOS 13, *)
 extension MMMViewPreview {
 	
-	public static var contexts: [MMMPreviewContext] { [MMMPreviewContext(layout: .sizeThatFits)] }
+	public static var context: MMMPreviewContextParsable { MMMPreviewContext.sizeThatFits }
 }
 
 @available(iOS 13, *)
-public final class ViewPreviewController<Preview: MMMViewPreview>: UIViewController {
+public final class ViewPreviewController: UIViewController {
 	
-	public init() {
+	private let _view: UIView
+	
+	public init(view: UIView) {
+		self._view = view
+		
 		super.init(nibName: nil, bundle: nil)
 	}
 	
@@ -30,7 +34,7 @@ public final class ViewPreviewController<Preview: MMMViewPreview>: UIViewControl
 	}
 	
 	public override func loadView() {
-		self.view = Preview.makeView()
+		self.view = _view
 	}
 	
 	public override func viewDidLoad() {
@@ -41,7 +45,7 @@ public final class ViewPreviewController<Preview: MMMViewPreview>: UIViewControl
 @available(iOS 13, *)
 extension MMMViewPreview {
 	
-	public static func makeViewController() -> ViewPreviewController<Self> {
-		ViewPreviewController()
+	public static func makeViewControllers() -> MMMControllerPreviewParsable {
+		makeViews().asViews().map(ViewPreviewController.init)
 	}
 }

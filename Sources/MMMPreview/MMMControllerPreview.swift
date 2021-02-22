@@ -10,31 +10,33 @@ import SwiftUI
 @available(iOS 13, *)
 public protocol MMMControllerPreview: PreviewProvider {
 	
-	associatedtype Controller: UIViewController
+	static func makeViewControllers() -> MMMControllerPreviewParsable
 	
-	static func makeViewController() -> Controller
-	
-	static var contexts: [MMMPreviewContext] { get }
+	static var context: MMMPreviewContextParsable { get }
 }
 
 @available(iOS 13, *)
 extension MMMControllerPreview {
 	
-	public static var contexts: [MMMPreviewContext] { [.default] }
+	public static var context: MMMPreviewContextParsable { MMMPreviewContext.default }
 }
+
+extension UIViewController: Identifiable {}
 
 @available(iOS 13, *)
 extension MMMControllerPreview {
 	
 	public static var previews: some View {
 		
-		ForEach(contexts) { context in
-			ControllerRepresentable<Self>()
-				.edgesIgnoringSafeArea(.all)
-				.previewDevice(context.previewDevice)
-				.previewLayout(context.previewLayout)
-				.previewDisplayName(context.displayName)
-				.preferredColorScheme(context.colorScheme)
+		ForEach(makeViewControllers().asControllers()) { controller in
+			ForEach(context.asContexts()) { context in
+				ControllerRepresentable(controller: controller)
+					.edgesIgnoringSafeArea(.all)
+					.previewDevice(context.previewDevice)
+					.previewLayout(context.previewLayout)
+					.previewDisplayName(context.displayName)
+					.preferredColorScheme(context.colorScheme)
+			}
 		}
 	}
 }
