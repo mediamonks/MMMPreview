@@ -12,13 +12,49 @@ public protocol MMMControllerPreview: PreviewProvider {
 	
 	static func makeViewControllers() -> MMMControllerPreviewParsable
 	
-	static var context: MMMPreviewContextParsable { get }
+	@MMMControllerPreviewBuilder static var previewViewControllers: MMMControllerPreviewParsable { get }
+	
+	static var contexts: [MMMPreviewContext] { get }
+	
+	@MMMPreviewContextBuilder static var context: MMMPreviewContextParsable { get }
 }
 
 @available(iOS 13, *)
 extension MMMControllerPreview {
 	
-	public static var context: MMMPreviewContextParsable { MMMPreviewContext.default }
+	public static func makeViewControllers() -> MMMControllerPreviewParsable {
+		[]
+	}
+	
+	public static var previewViewControllers: MMMControllerPreviewParsable {
+		makeViewControllers().asControllers()
+	}
+	
+	public static var contexts: [MMMPreviewContext] { context.asContexts() }
+	
+	@MMMPreviewContextBuilder public static var context: MMMPreviewContextParsable { MMMPreviewContext.default }
+}
+
+@_functionBuilder
+public struct MMMControllerPreviewBuilder {
+	
+	public static func buildBlock() -> [UIViewController] { [] }
+	
+	public static func buildBlock(_ values: MMMControllerPreviewParsable...) -> [UIViewController] {
+        values.flatMap { $0.asControllers() }
+    }
+    
+    public static func buildIf(_ value: MMMControllerPreviewParsable?) -> MMMControllerPreviewParsable {
+        value ?? []
+    }
+    
+    public static func buildEither(first: MMMControllerPreviewParsable) -> MMMControllerPreviewParsable {
+        first
+    }
+
+    public static func buildEither(second: MMMControllerPreviewParsable) -> MMMControllerPreviewParsable {
+        second
+    }
 }
 
 extension UIViewController: Identifiable {}
@@ -28,8 +64,8 @@ extension MMMControllerPreview {
 	
 	public static var previews: some View {
 		
-		ForEach(makeViewControllers().asControllers()) { controller in
-			ForEach(context.asContexts()) { context in
+		ForEach(previewViewControllers.asControllers()) { controller in
+			ForEach(contexts) { context in
 				ControllerRepresentable(controller: controller)
 					.edgesIgnoringSafeArea(.all)
 					.previewDevice(context.previewDevice)

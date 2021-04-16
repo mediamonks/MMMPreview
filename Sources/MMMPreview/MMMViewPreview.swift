@@ -9,12 +9,50 @@ import SwiftUI
 public protocol MMMViewPreview: MMMControllerPreview {
 	
 	static func makeViews() -> MMMViewPreviewParsable
+	
+	@MMMViewPreviewBuilder static var previewViews: MMMViewPreviewParsable { get }
+	
+	static var contexts: [MMMPreviewContext] { get }
+	
+	@MMMPreviewContextBuilder static var context: MMMPreviewContextParsable { get }
 }
 
 @available(iOS 13, *)
 extension MMMViewPreview {
 	
-	public static var context: MMMPreviewContextParsable { MMMPreviewContext.sizeThatFits }
+	public static func makeViews() -> MMMViewPreviewParsable {
+		[]
+	}
+	
+	public static var previewViews: MMMViewPreviewParsable {
+		makeViews().asViews()
+	}
+	
+	public static var contexts: [MMMPreviewContext] { context.asContexts() }
+	
+	@MMMPreviewContextBuilder public static var context: MMMPreviewContextParsable { MMMPreviewContext.sizeThatFits }
+}
+
+@_functionBuilder
+public struct MMMViewPreviewBuilder {
+	
+	public static func buildBlock() -> [UIView] { [] }
+	
+	public static func buildBlock(_ values: MMMViewPreviewParsable...) -> [UIView] {
+        values.flatMap { $0.asViews() }
+    }
+    
+    public static func buildIf(_ value: MMMViewPreviewParsable?) -> MMMViewPreviewParsable {
+        value ?? []
+    }
+    
+    public static func buildEither(first: MMMViewPreviewParsable) -> MMMViewPreviewParsable {
+        first
+    }
+
+    public static func buildEither(second: MMMViewPreviewParsable) -> MMMViewPreviewParsable {
+        second
+    }
 }
 
 @available(iOS 13, *)
@@ -46,6 +84,6 @@ public final class ViewPreviewController: UIViewController {
 extension MMMViewPreview {
 	
 	public static func makeViewControllers() -> MMMControllerPreviewParsable {
-		makeViews().asViews().map(ViewPreviewController.init)
+		previewViews.asViews().map(ViewPreviewController.init)
 	}
 }

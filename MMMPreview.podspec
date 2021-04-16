@@ -6,7 +6,7 @@
 Pod::Spec.new do |s|
 
 	s.name = "MMMPreview"
-	s.version = "0.2.0"
+	s.version = "0.3.0"
 	s.summary = "UIKit previews in your Xcode canvas"
 	s.description =  s.summary
 	s.homepage = "https://github.com/mediamonks/#{s.name}"

@@ -14,6 +14,28 @@ extension Array: MMMPreviewContextParsable where Element == MMMPreviewContext {
 	public func asContexts() -> [MMMPreviewContext] { self }
 }
 
+@_functionBuilder
+public struct MMMPreviewContextBuilder {
+	
+	public static func buildBlock() -> [MMMPreviewContext] { [] }
+	
+	public static func buildBlock(_ values: MMMPreviewContextParsable...) -> [MMMPreviewContext] {
+        values.flatMap { $0.asContexts() }
+    }
+    
+    public static func buildIf(_ value: MMMPreviewContextParsable?) -> MMMPreviewContextParsable {
+        value ?? []
+    }
+    
+    public static func buildEither(first: MMMPreviewContextParsable) -> MMMPreviewContextParsable {
+        first
+    }
+
+    public static func buildEither(second: MMMPreviewContextParsable) -> MMMPreviewContextParsable {
+        second
+    }
+}
+
 public struct MMMPreviewContext: Identifiable, MMMPreviewContextParsable {
 	
 	public enum Layout {

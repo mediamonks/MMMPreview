@@ -14,7 +14,7 @@ when strictly using programmatic UI (like all the cool kids do).
 SPM:
 
 ```swift
-.package(url: "https://github.com/mediamonks/MMMPreview", .upToNextMajor(from: "0.1.0"))
+.package(url: "https://github.com/mediamonks/MMMPreview", .upToNextMajor(from: "0.3.0"))
 ```
 
 Podfile:
@@ -52,15 +52,24 @@ import MMMPreview
 @available(iOS 13, *) // Tag if your project is < iOS 13.
 internal struct MyViewController_Previews: MMMControllerPreview, PreviewProvider {
 	
-	public static func makeViewControllers() -> MMMControllerPreviewParsable {
+	public static var previewViewControllers: MMMControllerPreviewParsable {
 		
 		// Setup your ViewController instance, e.g. with a ViewModel.
-		let model = MyMockViewModel()
-		let controller = MyViewController(viewModel: model)
-		
 		// We can either return a single UIViewController instance or an array of 
-		// controllers.
-		return controller
+		// controllers. 
+		MyViewController(
+			viewModel: MyMockViewModel(variation: .default)
+		)
+		
+		// Since it's a resultBuilder; you can use the SwiftUI syntax, no array's needed.
+		MyViewController(
+			viewModel: MyMockViewModel(variation: .alternate)
+		)
+		
+		// You can even do if/else statements.
+		if foo {
+			OtherViewController()
+		}
 	}
 }
 
@@ -76,14 +85,14 @@ import MMMPreview
 @available(iOS 13, *) // Tag if your project is < iOS 13.
 internal struct MyView_Previews: MMMViewPreview, PreviewProvider {
 
-	public static func makeViews() -> MMMViewPreviewParsable {
+	public static var previewViews: MMMViewPreviewParsable {
 
 		// Setup your View instance, e.g. with a ViewModel.
-		let model = MyMockViewModel()
-		let view = MyView(viewModel: model)
+		MyView(viewModel: MyMockViewModel())
 		
-		// We can return either a single UIView instance, or an array of UIViews.
-		return view
+		if condition {
+			MyView(viewModel: OtherMockViewModel())
+		}
 	}
 }
 
@@ -106,30 +115,34 @@ import MMMPreview
 @available(iOS 13, *)
 extension MMMControllerPreview {
 	
-	public static var context: MMMPreviewContextParsable {
-		// We can either return an array of or a single MMMPreviewContext instance.
-		[
-			MMMPreviewContext(
-				displayName: "iPhone SE", // Will be shown as preview title, not necesary.
-				// The simulator name should exactly match.
-				layout: .simulator(name: "iPhone SE (1st generation)")
-			),
-			MMMPreviewContext(
-				displayName: "iPhone 11", // Will be shown as preview title.
-				layout: .simulator(name: "iPhone 11"),
-				scheme: .dark // Dark / light mode.
-			)
-		]
+	// For project-wide extensions, we need the @MMMPreviewContextBuilder wrapper.
+	@MMMPreviewContextBuilder public static var context: MMMPreviewContextParsable {
+		// We can use the same SwiftUI syntax here.
+		MMMPreviewContext(
+			displayName: "iPhone SE", // Will be shown as preview title, not necesary.
+			// The simulator name should exactly match.
+			layout: .simulator(name: "iPhone SE (1st generation)")
+		)
+		
+		MMMPreviewContext(
+			displayName: "iPhone 11", // Will be shown as preview title.
+			layout: .simulator(name: "iPhone 11"),
+			scheme: .dark // Dark / light mode.
+		)
 	}
 }
 
 @available(iOS 13, *)
 extension MMMViewPreview {
 	
-	public static var context: MMMPreviewContextParsable {
+	// For project-wide extensions, we need the @MMMPreviewContextBuilder wrapper.
+	@MMMPreviewContextBuilder public static var context: MMMPreviewContextParsable {
 		MMMPreviewContext(
 			// A custom width / height for your preview.
 			layout: .custom(width: 320, height: 300)
+		)
+		MMMPreviewContext(
+			layout: .custom(width: 480, height: 120)
 		)
 	}
 }
@@ -147,23 +160,26 @@ import MMMPreview
 @available(iOS 13, *) // Tag if your project is < iOS 13.
 internal struct MyView_Previews: MMMViewPreview, PreviewProvider {
 
-	public static func makeViews() -> MMMViewPreviewParsable {
+	public static var previewViews: MMMViewPreviewParsable {
 		
-		// We can also return multiple views, e.g. for when testing multiple states at once.
-		return [
-			MyView(viewModel: MyMockViewModel(state: .one)),
-			MyView(viewModel: MyMockViewModel(state: .two)),
-			MyView(viewModel: MyMockViewModel(state: .three))
-		]
+		// We can also provide multiple views, e.g. for when testing multiple states at once.
+		
+		MyView(viewModel: MyMockViewModel(state: .one))
+		MyView(viewModel: MyMockViewModel(state: .two))
+		MyView(viewModel: MyMockViewModel(state: .three))
+		
+		if state == .one {
+			OtherView()
+		} else {
+			MyView()
+		}
 	}
 	
 	// This overrides the project-wide contexts.
-	public static var contexts: [MMMPreviewContext] {
-		[
-			MMMPreviewContext(
-				layout: .custom(width: 80, height: 140)
-			)
-		]
+	public static var context: MMMPreviewContextParsable {
+		MMMPreviewContext(
+			layout: .custom(width: 80, height: 140)
+		)
 	}
 }
 
