@@ -185,3 +185,9 @@ internal struct MyView_Previews: MMMViewPreview, PreviewProvider {
 
 #endif
 ```
+
+## Ready for liftoff? 🚀
+
+We're always looking for talent. Join one of the fastest-growing rocket ships in
+the business. Head over to our [careers page](https://media.monks.com/careers)
+for more info!
