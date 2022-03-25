@@ -1,5 +1,7 @@
 # MMMPreview
 
+[![Build](https://github.com/mediamonks/MMMPreview/workflows/Build/badge.svg)](https://github.com/mediamonks/MMMPreview/actions?query=workflow%3ABuild)
+
 UIKit previews in your Xcode canvas. Leverages the SwiftUI preview window, but
 displaying your `UIView`s / `UIViewController`s.
 
@@ -40,7 +42,7 @@ tag where referincing `MMMPreview`.
 
 ### Simple example
 
-The easiest setup would be to just add the preview provider struct at the bottom of your UIView(controller) 
+The easiest setup would be to just add the preview provider struct at the bottom of your UIView(controller)
 file.
 
 **UIViewController**
@@ -51,21 +53,21 @@ import MMMPreview
 
 @available(iOS 13, *) // Tag if your project is < iOS 13.
 internal struct MyViewController_Previews: MMMControllerPreview, PreviewProvider {
-	
+
 	public static var previewViewControllers: MMMControllerPreviewParsable {
-		
+
 		// Setup your ViewController instance, e.g. with a ViewModel.
-		// We can either return a single UIViewController instance or an array of 
-		// controllers. 
+		// We can either return a single UIViewController instance or an array of
+		// controllers.
 		MyViewController(
 			viewModel: MyMockViewModel(variation: .default)
 		)
-		
+
 		// Since it's a resultBuilder; you can use the SwiftUI syntax, no array's needed.
 		MyViewController(
 			viewModel: MyMockViewModel(variation: .alternate)
 		)
-		
+
 		// You can even do if/else statements.
 		if foo {
 			OtherViewController()
@@ -89,7 +91,7 @@ internal struct MyView_Previews: MMMViewPreview, PreviewProvider {
 
 		// Setup your View instance, e.g. with a ViewModel.
 		MyView(viewModel: MyMockViewModel())
-		
+
 		if condition {
 			MyView(viewModel: OtherMockViewModel())
 		}
@@ -114,7 +116,7 @@ import MMMPreview
 
 @available(iOS 13, *)
 extension MMMControllerPreview {
-	
+
 	// For project-wide extensions, we need the @MMMPreviewContextBuilder wrapper.
 	@MMMPreviewContextBuilder public static var context: MMMPreviewContextParsable {
 		// We can use the same SwiftUI syntax here.
@@ -123,7 +125,7 @@ extension MMMControllerPreview {
 			// The simulator name should exactly match.
 			layout: .simulator(name: "iPhone SE (1st generation)")
 		)
-		
+
 		MMMPreviewContext(
 			displayName: "iPhone 11", // Will be shown as preview title.
 			layout: .simulator(name: "iPhone 11"),
@@ -134,7 +136,7 @@ extension MMMControllerPreview {
 
 @available(iOS 13, *)
 extension MMMViewPreview {
-	
+
 	// For project-wide extensions, we need the @MMMPreviewContextBuilder wrapper.
 	@MMMPreviewContextBuilder public static var context: MMMPreviewContextParsable {
 		MMMPreviewContext(
@@ -161,20 +163,20 @@ import MMMPreview
 internal struct MyView_Previews: MMMViewPreview, PreviewProvider {
 
 	public static var previewViews: MMMViewPreviewParsable {
-		
+
 		// We can also provide multiple views, e.g. for when testing multiple states at once.
-		
+
 		MyView(viewModel: MyMockViewModel(state: .one))
 		MyView(viewModel: MyMockViewModel(state: .two))
 		MyView(viewModel: MyMockViewModel(state: .three))
-		
+
 		if state == .one {
 			OtherView()
 		} else {
 			MyView()
 		}
 	}
-	
+
 	// This overrides the project-wide contexts.
 	public static var context: MMMPreviewContextParsable {
 		MMMPreviewContext(
